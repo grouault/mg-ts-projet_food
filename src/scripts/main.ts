@@ -1,17 +1,15 @@
-import '../sass/main.scss'
+import '../sass/main.scss';
 
-import IMG_POMME from '../images/pomme.png';
-import IMG_POIRE from "../images/poire.png";
-import IMG_SALAMI from "../images/salami.png";
-import IMG_SAUCISSON from "../images/saucisson.png";
-import IMG_POMME_DE_TERRE from "../images/potatoes.png";
 import IMG_CREVETTE from "../images/crevette.png";
+import IMG_POIRE from "../images/poire.png";
+import IMG_POMME from '../images/pomme.png';
+import IMG_POMME_DE_TERRE from "../images/potatoes.png";
+import IMG_SALAMI from "../images/salami.png";
 
-import { Aliment, ALIMENT_TYPES, CLASSE_ALIMENT, getClasseAliment } from './classe/Aliment.class';
-import { Charcuterie } from './classe/Charcuterie.class';
-import { Fruit } from './classe/Fruit.class';
-import { Legume } from './classe/Legume.class';
+import { Aliment, ALIMENT_CATEGORIES, ALIMENT_QUALITY, getAlimentCategoryFromValue, getClasseAliment, Type_Aliment } from './classe/Aliment.class';
 import { AlimentBuilder } from './classe/AlimentBuilder.class';
+import { Fruit } from './classe/Fruit.class';
+import { Charcuterie } from './classe/Charcuterie.class';
 
 const tableFoods = document.querySelector("#foods-table") as HTMLTableElement;
 const tBodyFoods = tableFoods.querySelector("#foods-body") as HTMLTableSectionElement;
@@ -24,34 +22,25 @@ type Option = {
 }
 
 const options:Option[] =[];
-options.push({label:'Toutes', value:CLASSE_ALIMENT.TOUTES});
-options.push({label:'Bon', value:CLASSE_ALIMENT.BONNE});
-options.push({label:'Moyen', value:CLASSE_ALIMENT.MOYENNE});
-options.push({label:'Mauvais', value:CLASSE_ALIMENT.MAUVAISE});
+options.push({label:'Toutes', value:ALIMENT_QUALITY.TOUTES});
+options.push({label:'Bon', value:ALIMENT_QUALITY.BONNE});
+options.push({label:'Moyen', value:ALIMENT_QUALITY.MOYENNE});
+options.push({label:'Mauvais', value:ALIMENT_QUALITY.MAUVAISE});
 
 options.forEach(o => addOption(o, selectQuality));
 selectQuality.addEventListener('change', (e:Event) => {
   const target = e.target as HTMLSelectElement;
-  buildTable(getClasseAliment(target.value));
+  buildTableFromQuality(getClasseAliment(target.value));
 });
 
-Object.values(ALIMENT_TYPES).forEach((ALIMENT_TYPE, index) => {
+addOption({'label': 'Toutes', 'value': '-'}, selectAlimentType);
+Object.values(ALIMENT_CATEGORIES).forEach((ALIMENT_TYPE, index) => {
   addOption({'label': ALIMENT_TYPE.label, 'value': ALIMENT_TYPE.value}, selectAlimentType);
 });
 selectAlimentType.addEventListener('change', (e:Event) => {
   const target = e.target as HTMLSelectElement;
   console.log("target = ", typeof(target.value));
-  switch (target.value) {
-    case ALIMENT_TYPES.CHARCUTERIE.value:
-      console.log("charcuterie");
-      break;
-    case ALIMENT_TYPES.FRUIT.value:
-      console.log("fruit");
-      break;
-    default:
-      console.log("breakos");
-      break;
-  }
+  buildTableFromCategory(getAlimentCategoryFromValue(target.value));
 });
 
 
@@ -80,39 +69,27 @@ function addRow(newRow:Aliment, tBody:HTMLTableSectionElement):void {
   addCellImg(cell, newRow.getImage());
 }
 
-function buildTable(qualite:CLASSE_ALIMENT):void {
+function buildTableFromCategory(category:Type_Aliment){
   tBodyFoods.innerHTML = "";
-  switch (qualite) {
-    case CLASSE_ALIMENT.TOUTES:
-      Aliment.ALL.forEach(f => addRow(f, tBodyFoods));
-      break;
-    case CLASSE_ALIMENT.BONNE:
-      Aliment.ALL_GOOD.forEach(f => addRow(f, tBodyFoods));
-      break;
-    case CLASSE_ALIMENT.MAUVAISE:
-      Aliment.ALL_BAD.forEach(f => addRow(f, tBodyFoods));
-      break;
-    case CLASSE_ALIMENT.MOYENNE:
-      Aliment.ALL_AVERAGE.forEach(f => addRow(f, tBodyFoods));
-      break;
-    default:
-      tBodyFoods.innerHTML = "Pas de données";
-      break;
-  }
+  AlimentBuilder.list(category).forEach(a => addRow(a, tBodyFoods));;
+}
 
+function buildTableFromQuality(quality:ALIMENT_QUALITY):void {
+  tBodyFoods.innerHTML = "";
+  AlimentBuilder.listQuality(quality).forEach(a => addRow(a, tBodyFoods));
 };
 
 AlimentBuilder.buildAll([
-  [ALIMENT_TYPES.FRUIT, ["Pomme", 0, 0.2, 14, 0.3, IMG_POMME]],
-  [ALIMENT_TYPES.CHARCUTERIE, ["Poire", 0, 0.1, 15, 0.4, IMG_POIRE]],
-  [ALIMENT_TYPES.CHARCUTERIE, ["Salami", 0, 26.5, 1.3, 12, IMG_SALAMI]],
-  [ALIMENT_TYPES.LEGUME, ["Pomme de terre", 0, 0.5, 20, 0.8, IMG_POMME_DE_TERRE]],
-  [ALIMENT_TYPES.FRUITS_DE_MER, ["Crevettes", 0, 0.5, 10, 0.7, IMG_CREVETTE]]
+  [ALIMENT_CATEGORIES.FRUIT, ["Pomme", 0, 0.2, 14, 0.3, IMG_POMME]],
+  [ALIMENT_CATEGORIES.FRUIT, ["Poire", 0, 0.1, 15, 0.4, IMG_POIRE]],
+  [ALIMENT_CATEGORIES.CHARCUTERIE, ["Salami", 0, 26.5, 1.3, 12, IMG_SALAMI]],
+  [ALIMENT_CATEGORIES.LEGUME, ["Pomme de terre", 0, 0.5, 20, 0.8, IMG_POMME_DE_TERRE]],
+  [ALIMENT_CATEGORIES.FRUITS_DE_MER, ["Crevettes", 0, 0.5, 10, 0.7, IMG_CREVETTE]]
 ]);
 
-buildTable(CLASSE_ALIMENT.TOUTES);
+buildTableFromQuality(ALIMENT_QUALITY.TOUTES);
 
-console.log("Aliments:", Aliment.ALL);
-console.log("Charcuterie:", Charcuterie.ALL);
-console.log("Fruits:", Fruit.ALL);
+console.log("Aliments:", AlimentBuilder.listAll());
+console.log("Charcuterie:", AlimentBuilder.list(ALIMENT_CATEGORIES.CHARCUTERIE));
+console.log("Fruits:", AlimentBuilder.list(ALIMENT_CATEGORIES.FRUIT));
 

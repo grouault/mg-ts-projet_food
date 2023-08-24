@@ -1,22 +1,15 @@
 export abstract class Aliment {
 
-  public static ALL:Aliment[] = [];
-  public static ALL_GOOD:Aliment[] = [];
-  public static ALL_AVERAGE:Aliment[] = [];
-  public static ALL_BAD:Aliment[] = [];
-
   constructor(
     private readonly nom:string,
     private readonly type: Type_Aliment,
-    private qualite: CLASSE_ALIMENT,
+    private qualite: ALIMENT_QUALITY,
     private readonly nbCalories: number,
     private readonly nbLipides: number,
     private readonly nbGlucides: number,
     private readonly nbProteines: number,
     private image: string
-    ) {
-      Aliment.ALL.push(this);
-  }
+    ) {}
 
   protected abstract afficher():void;
 
@@ -30,8 +23,8 @@ export abstract class Aliment {
 
   public getType():Type_Aliment {return this.type }
 
-  public getQualite():CLASSE_ALIMENT {return this.qualite}
-  public setQualite(qualite:CLASSE_ALIMENT):Aliment{
+  public getQualite():ALIMENT_QUALITY {return this.qualite}
+  public setQualite(qualite:ALIMENT_QUALITY):Aliment{
     this.qualite = qualite;
     return this;
   }
@@ -52,22 +45,22 @@ export abstract class Aliment {
 
 }
 
-export enum CLASSE_ALIMENT {
+export enum ALIMENT_QUALITY {
   BONNE="A", 
   MOYENNE="B", 
   MAUVAISE="C", 
   TOUTES="-"
 }
 
-export function getClasseAliment(value: string): CLASSE_ALIMENT {
+export function getClasseAliment(value: string): ALIMENT_QUALITY {
   if (value === "A") {
-      return CLASSE_ALIMENT.BONNE;
+      return ALIMENT_QUALITY.BONNE;
   } else if (value === "B") {
-      return CLASSE_ALIMENT.MOYENNE;
+      return ALIMENT_QUALITY.MOYENNE;
   } else if (value === "C") {
-      return CLASSE_ALIMENT.MAUVAISE;
+      return ALIMENT_QUALITY.MAUVAISE;
   } else {
-      return CLASSE_ALIMENT.TOUTES;
+      return ALIMENT_QUALITY.TOUTES;
   }
 }
 
@@ -77,7 +70,7 @@ export interface Type_Aliment {
 }
 
 // ENUM EVOLUES
-export const ALIMENT_TYPES: Readonly <{
+export const ALIMENT_CATEGORIES: Readonly <{
    FRUIT: Readonly<Type_Aliment>;
    LEGUME: Readonly<Type_Aliment>;
    CHARCUTERIE: Readonly<Type_Aliment>;
@@ -101,10 +94,9 @@ export const ALIMENT_TYPES: Readonly <{
   FRUITS_DE_MER: {label: "fruits de mer", value: "FRUITS DE MER"}
 }
 
-export const getAlimentTypesFromValue = (val:string) : Type_Aliment => {
-    return Object.values(ALIMENT_TYPES)
+export const getAlimentCategoryFromValue = (val:string) : Type_Aliment => {
+    return Object.values(ALIMENT_CATEGORIES)
       .filter(type => type.value === val)
       .reduce((obj, val) => val, {} as Type_Aliment);
 }
 
-console.log("getAlimentTypesFromValue = ", getAlimentTypesFromValue("FRUIT"));

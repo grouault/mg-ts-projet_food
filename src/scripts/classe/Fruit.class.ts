@@ -1,9 +1,6 @@
-import { AlimentBon } from "./Aliment.bon.class";
-import { Aliment, ALIMENT_TYPES, CLASSE_ALIMENT } from "./Aliment.class"
+import { Aliment, ALIMENT_CATEGORIES, ALIMENT_QUALITY } from "./Aliment.class"
 
-export class Fruit extends AlimentBon {
-
-  public static ALL:Fruit[] = [];
+export class Fruit extends Aliment {
 
   constructor(
     nom:string,
@@ -13,14 +10,14 @@ export class Fruit extends AlimentBon {
     nbProteines: number,
     image: string
  ){
-    super(nom, ALIMENT_TYPES.FRUIT, nbCalories, nbLipides, nbGlucides, nbProteines, image);
-    Fruit.ALL.push(this);
+    super(nom, ALIMENT_CATEGORIES.FRUIT, ALIMENT_QUALITY.BONNE, nbCalories, nbLipides, nbGlucides, nbProteines, image);
   }
 
   public afficher(this:Aliment):void{
-    console.log("Nom : ", this.getNom());
+    console.log("Nom: ", this.getNom());
     console.log("Type: ", this.getType());
-    super.afficher();
+    console.log("Qualite: ", this.getQualite)
+    super.afficherValeurNutritive();
   }
 
 }

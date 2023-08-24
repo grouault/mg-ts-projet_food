@@ -1,9 +1,6 @@
-import { Aliment, ALIMENT_TYPES } from "./Aliment.class";
-import { AlimentMauvais } from "./Aliment.mauvais.class";
+import { Aliment, ALIMENT_CATEGORIES, ALIMENT_QUALITY } from "./Aliment.class";
 
-export class Charcuterie extends AlimentMauvais{
-
-  public static ALL:Charcuterie[] = [];
+export class Charcuterie extends Aliment{
 
   constructor(
     nom:string,
@@ -13,13 +10,13 @@ export class Charcuterie extends AlimentMauvais{
     nbProteines: number,
     image: string
  ){
-    super(nom, ALIMENT_TYPES.CHARCUTERIE, nbCalories, nbLipides, nbGlucides, nbProteines, image);
-    Charcuterie.ALL.push(this);
+    super(nom, ALIMENT_CATEGORIES.CHARCUTERIE, ALIMENT_QUALITY.MAUVAISE, nbCalories, nbLipides, nbGlucides, nbProteines, image);
   }
 
   public afficher(this:Aliment):void{
     console.log("Nom : ", this.getNom());
     console.log("Type: ", this.getType());
+    console.log("Qualite: ", this.getQualite());
     super.afficherValeurNutritive();
   }
 
